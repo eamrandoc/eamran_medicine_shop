@@ -4,9 +4,16 @@ import useAuth from '../Hooks/useAuth';
 
 const Navbar = () => {
     const { user, logOut } = useAuth();
-    const menu= <>
-    <li><NavLink to={'/'}>Home</NavLink></li>
-    <li><NavLink to={'/shop'}>Shop</NavLink></li>
+    const handleLogout = async () => {
+        try {
+            await logOut(); // Log the user out using the logOut function from AuthContext
+        } catch (error) {
+            console.error("Logout error:", error.message);
+        }
+    };
+    const menu = <>
+        <li><NavLink to={'/'}>Home</NavLink></li>
+        <li><NavLink to={'/shop'}>Shop</NavLink></li>
     </>
     return (
         <div>
@@ -34,7 +41,29 @@ const Navbar = () => {
                     </ul>
                 </div>
                 <div className="navbar-end">
-                    <a className="btn">Button</a>
+                    {/* If logged in, display profile image and logout button */}
+                    {user ? (
+                        <div className="flex items-center space-x-3">
+                            {/* Profile image */}
+                            <img
+                                src={user.photoURL || 'https://via.placeholder.com/40'}
+                                alt="Profile"
+                                className="w-10 h-10 rounded-full"
+                            />
+                            <button
+                                onClick={handleLogout}
+                                className="btn btn-danger text-sm"
+                            >
+                                Logout
+                            </button>
+                        </div>
+                    ) : (
+                        // If not logged in, display Sign In and Register buttons
+                        <div className="flex items-center space-x-3">
+                            <Link to="/login" className="btn btn-primary text-sm">Sign In</Link>
+                            <Link to="/register" className="btn btn-secondary text-sm">Register</Link>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
