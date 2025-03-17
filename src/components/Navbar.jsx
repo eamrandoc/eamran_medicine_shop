@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import useAuth from '../Hooks/useAuth';
 
 const Navbar = () => {
+    const { user, logOut } = useAuth();
     const menu= <>
     <li><NavLink to={'/'}>Home</NavLink></li>
     <li><NavLink to={'/shop'}>Shop</NavLink></li>

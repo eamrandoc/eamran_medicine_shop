@@ -11,10 +11,10 @@ const Register = () => {
         reset,
         watch, // Used to watch password value for validation
     } = useForm();
-    
+
     const { signUp, updateUserProfile } = useAuth()
     const navigate = useNavigate()
-    
+
     const [isLoading, setIsLoading] = useState(false); // Track loading state for Google sign-in
     const [errorMessage, setErrorMessage] = useState(""); // Track error message from Google sign-in
 
@@ -26,25 +26,25 @@ const Register = () => {
         const { confirmPassword, ...dataWithoutConfirmPassword } = data;
         console.log("Form data without confirmPassword:", dataWithoutConfirmPassword);
         signUp(data?.email, data?.password)
-        .then(result => {
-            const loggedUser = result.user;
-            console.log(loggedUser);
-            updateUserProfile(data.name, data.photoURL)
-                .then(() => {
-                    console.log('user profile info updated')
-                    reset();
-                    // Swal.fire({
-                    //     position: 'top-end',
-                    //     icon: 'success',
-                    //     title: 'User created successfully.',
-                    //     showConfirmButton: false,
-                    //     timer: 1500
-                    // });
-                    navigate('/');
+            .then(result => {
+                const loggedUser = result.user;
+                console.log(loggedUser);
+                updateUserProfile(data.name, data.photoURL)
+                    .then(() => {
+                        console.log('user profile info updated')
+                        reset();
+                        // Swal.fire({
+                        //     position: 'top-end',
+                        //     icon: 'success',
+                        //     title: 'User created successfully.',
+                        //     showConfirmButton: false,
+                        //     timer: 1500
+                        // });
+                        navigate('/');
 
-                })
-                .catch(error => console.log(error))
-        })
+                    })
+                    .catch(error => console.log(error))
+            })
 
     };
 
