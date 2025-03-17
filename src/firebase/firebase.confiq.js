@@ -6,12 +6,12 @@ import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAfFLl-8UcRVxl-1UdLiINwi0Ceghx6l2o",
-  authDomain: "eamran-medicine-shop.firebaseapp.com",
-  projectId: "eamran-medicine-shop",
-  storageBucket: "eamran-medicine-shop.firebasestorage.app",
-  messagingSenderId: "363140079502",
-  appId: "1:363140079502:web:305a8c2ca3c8c8238f8edf"
+    apiKey: import.meta.env.VITE_apiKey,
+    authDomain: import.meta.env.VITE_authDomain,
+    projectId: import.meta.env.VITE_projectId,
+    storageBucket: import.meta.env.VITE_storageBucket,
+    messagingSenderId: import.meta.env.VITE_messagingSenderId,
+    appId: import.meta.env.VITE_appId,
 };
 
 // Initialize Firebase
