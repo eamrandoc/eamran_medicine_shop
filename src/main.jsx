@@ -4,6 +4,7 @@ import './index.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout.jsx'
 import AuthProvider from './provider/AuthProvider.jsx'
+import Register from './pages/Register/Register.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -11,6 +12,7 @@ createRoot(document.getElementById('root')).render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<MainLayout></MainLayout>} />
+          <Route path="/register" element={<Register></Register>} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
