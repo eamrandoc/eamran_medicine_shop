@@ -2,8 +2,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import useAuth from "../../Hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import useAxiosPublic from "../../Hooks/useAxiosPublic";
 
 const Register = () => {
+    const axiosPublic = useAxiosPublic()
     const {
         register,
         handleSubmit,
@@ -29,135 +31,166 @@ const Register = () => {
             .then(result => {
                 const loggedUser = result.user;
                 console.log(loggedUser);
+
+                // Update the user's profile with name and photo URL
                 updateUserProfile(data.name, data.photoURL)
                     .then(() => {
-                        console.log('user profile info updated')
-                        reset();
-                        // Swal.fire({
-                        //     position: 'top-end',
-                        //     icon: 'success',
-                        //     title: 'User created successfully.',
-                        //     showConfirmButton: false,
-                        //     timer: 1500
-                        // });
-                        navigate('/');
+                        console.log("User profile updated");
+
+                        // Create a user object with the required role
+                        const userInfo = {
+                            name: data.name,
+                            email: data.email,
+                        };
+
+                        // Send the user info to the backend
+                        axiosPublic.post("/users", userInfo)
+                            .then(res => {
+                                console.log("User data sent to backend:", res.data);
+                                if (res.data?.insertedId) {
+                                    // Reset form and navigate to home page
+                                    reset();
+                                    // navigate("/");
+
+                                    // Optionally show success message (e.g., using Swal)
+                                    // Swal.fire({
+                                    //     position: 'top-end',
+                                    //     icon: 'success',
+                                    //     title: 'User created successfully.',
+                                    //     showConfirmButton: false,
+                                    //     timer: 1500
+                                    // });
+                                }
+
+                            })
+                            .catch(error => {
+                                console.error("Error sending user data to backend:", error);
+                                setErrorMessage("Failed to register user. Please try again.");
+                            });
 
                     })
-                    .catch(error => console.log(error))
+                    .catch(error => {
+                        console.error("Error updating user profile:", error);
+                        setErrorMessage("Profile update failed. Please try again.");
+                    });
             })
-
+            .catch(error => {
+                console.error("Error during sign-up:", error);
+                setErrorMessage("Registration failed. Please check your credentials.");
+            });
     };
 
-    //   const handleGoogleSignIn = async () => {
-    //     setIsLoading(true);
-    //     try {
-    //       const result = await signInWithPopup(auth, provider);
-    //       const user = result.user;
-    //       console.log("Google User:", user);
-    //       // You can handle user data here, save to database, or redirect, etc.
-    //     } catch (error) {
-    //       setErrorMessage(error.message); // Capture any error during Google Sign-In
-    //     } finally {
-    //       setIsLoading(false);
-    //     }
-    //   };
 
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="w-full max-w-md p-6 bg-white shadow-md rounded-lg">
-                <h2 className="text-2xl font-bold text-center mb-6">Register</h2>
+//   const handleGoogleSignIn = async () => {
+//     setIsLoading(true);
+//     try {
+//       const result = await signInWithPopup(auth, provider);
+//       const user = result.user;
+//       console.log("Google User:", user);
+//       // You can handle user data here, save to database, or redirect, etc.
+//     } catch (error) {
+//       setErrorMessage(error.message); // Capture any error during Google Sign-In
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
 
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                    {/* Name Field */}
-                    <div>
-                        <label htmlFor="name" className="label">Name</label>
-                        <input
-                            id="name"
-                            type="text"
-                            {...register("name", { required: "Name is required" })}
-                            className="input input-bordered w-full"
-                        />
-                        {errors.name && (
-                            <p className="text-red-500 text-sm">{errors.name.message}</p>
-                        )}
-                    </div>
+return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="w-full max-w-md p-6 bg-white shadow-md rounded-lg">
+            <h2 className="text-2xl font-bold text-center mb-6">Register</h2>
 
-                    {/* Email Field */}
-                    <div>
-                        <label htmlFor="email" className="label">Email</label>
-                        <input
-                            id="email"
-                            type="email"
-                            {...register("email", {
-                                required: "Email is required",
-                                pattern: {
-                                    value: /^[a-zA-Z0-9._-]+@[a-zAZ0-9.-]+\.[a-zA-Z]{2,4}$/,
-                                    message: "Invalid email format",
-                                },
-                            })}
-                            className="input input-bordered w-full"
-                        />
-                        {errors.email && (
-                            <p className="text-red-500 text-sm">{errors.email.message}</p>
-                        )}
-                    </div>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                {/* Name Field */}
+                <div>
+                    <label htmlFor="name" className="label">Name</label>
+                    <input
+                        id="name"
+                        type="text"
+                        {...register("name", { required: "Name is required" })}
+                        className="input input-bordered w-full"
+                    />
+                    {errors.name && (
+                        <p className="text-red-500 text-sm">{errors.name.message}</p>
+                    )}
+                </div>
 
-                    {/* Password Field */}
-                    <div>
-                        <label htmlFor="password" className="label">Password</label>
-                        <input
-                            id="password"
-                            type="password"
-                            {...register("password", { required: "Password is required" })}
-                            className="input input-bordered w-full"
-                        />
-                        {errors.password && (
-                            <p className="text-red-500 text-sm">{errors.password.message}</p>
-                        )}
-                    </div>
+                {/* Email Field */}
+                <div>
+                    <label htmlFor="email" className="label">Email</label>
+                    <input
+                        id="email"
+                        type="email"
+                        {...register("email", {
+                            required: "Email is required",
+                            pattern: {
+                                value: /^[a-zA-Z0-9._-]+@[a-zAZ0-9.-]+\.[a-zA-Z]{2,4}$/,
+                                message: "Invalid email format",
+                            },
+                        })}
+                        className="input input-bordered w-full"
+                    />
+                    {errors.email && (
+                        <p className="text-red-500 text-sm">{errors.email.message}</p>
+                    )}
+                </div>
 
-                    {/* Confirm Password Field */}
-                    <div>
-                        <label htmlFor="confirmPassword" className="label">Confirm Password</label>
-                        <input
-                            id="confirmPassword"
-                            type="password"
-                            {...register("confirmPassword", {
-                                required: "Confirm password is required",
-                                validate: (value) =>
-                                    value === password || "Passwords do not match",
-                            })}
-                            className="input input-bordered w-full"
-                        />
-                        {errors.confirmPassword && (
-                            <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>
-                        )}
-                    </div>
+                {/* Password Field */}
+                <div>
+                    <label htmlFor="password" className="label">Password</label>
+                    <input
+                        id="password"
+                        type="password"
+                        {...register("password", { required: "Password is required" })}
+                        className="input input-bordered w-full"
+                    />
+                    {errors.password && (
+                        <p className="text-red-500 text-sm">{errors.password.message}</p>
+                    )}
+                </div>
 
-                    {/* Submit Button */}
-                    <button type="submit" className="w-full btn btn-primary">
-                        Register
-                    </button>
-                </form>
+                {/* Confirm Password Field */}
+                <div>
+                    <label htmlFor="confirmPassword" className="label">Confirm Password</label>
+                    <input
+                        id="confirmPassword"
+                        type="password"
+                        {...register("confirmPassword", {
+                            required: "Confirm password is required",
+                            validate: (value) =>
+                                value === password || "Passwords do not match",
+                        })}
+                        className="input input-bordered w-full"
+                    />
+                    {errors.confirmPassword && (
+                        <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>
+                    )}
+                </div>
 
-                {/* Error message from Google Sign-in */}
-                {errorMessage && (
-                    <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
-                )}
+                {/* Submit Button */}
+                <button type="submit" className="w-full btn btn-primary">
+                    Register
+                </button>
+            </form>
 
-                <div className="divider">OR</div>
+            {/* Error message from Google Sign-in */}
+            {errorMessage && (
+                <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
+            )}
 
-                {/* Google Sign-In Button */}
-                {/* <button
+            <div className="divider">OR</div>
+
+            {/* Google Sign-In Button */}
+            {/* <button
               onClick={handleGoogleSignIn}
               className="w-full btn btn-outline"
               disabled={isLoading}
             >
               {isLoading ? "Signing in..." : "Sign up with Google"}
             </button> */}
-            </div>
         </div>
-    );
+    </div>
+);
 };
 
 export default Register;
