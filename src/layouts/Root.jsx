@@ -3,12 +3,14 @@ import MainLayout from "./MainLayout";
 import Register from "../pages/Register/Register";
 import Login from "../pages/Login/Login";
 import Home from "../pages/Home/Home";
+import CategoryDetails from "../pages/Details/CategoryDetails";
 
 const Root = () => {
   return (
     <Routes>
       <Route path="/" element={<MainLayout></MainLayout>}>
         <Route index element={<Home></Home>}></Route>
+        <Route path="category/:categoryName" element={<CategoryDetails></CategoryDetails>} />
       </Route>
       {/* <Route path="/shop" element={<Shop />} /> */}
       <Route path="/register" element={<Register></Register>} />
