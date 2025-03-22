@@ -3,10 +3,12 @@ import { useParams } from "react-router-dom";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import { useState } from "react";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
+import useAuth from "../../Hooks/useAuth";
 
 const CategoryDetails = () => {
     const axiosPublic = useAxiosPublic();
     const axiosSecure = useAxiosSecure();
+    const {user} = useAuth()
     const { categoryName } = useParams(); // Get category name from URL
     const [searchTerm, setSearchTerm] = useState(""); // Search input
     const [sortOrder, setSortOrder] = useState("asc"); // Sort order (ascending or descending)
@@ -43,7 +45,25 @@ const CategoryDetails = () => {
         }
 
         // Add to cart on the server
-        const res = await axiosSecure.post(`/carts`, medicine );
+        const cartData = {
+            medicineId: medicine._id,        // Medicine ID
+            name: medicine.name,             // Medicine Name
+            price: medicine.price,           // Medicine Price
+            category: medicine.category,     // Medicine Category
+            image: medicine.image,           // Medicine Image
+            description: medicine.description, // Medicine Description
+            dosage: medicine.dosage,         // Medicine Dosage
+            medicineCount: medicine.medicineCount, // Medicine count available
+            quantity: 1,                     // Set initial quantity to 1 (or any value you want)
+            email: user.email                // User's email to associate with the cart
+        };
+
+        // const cartData = { 
+        //     medicine, 
+        //     email: user?.email // Assuming `user.email` is available
+        // };
+
+        const res = await axiosSecure.post(`/carts`, cartData);
         if (res.data) {
             console.log("Medicine added to cart:", res.data);
         }

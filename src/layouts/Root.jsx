@@ -5,6 +5,7 @@ import Login from "../pages/Login/Login";
 import Home from "../pages/Home/Home";
 import CategoryDetails from "../pages/Details/CategoryDetails";
 import MedicineDetails from "../pages/Details/MedicineDetails";
+import Cart from "../pages/Cart/Cart";
 
 const Root = () => {
   return (
@@ -13,6 +14,7 @@ const Root = () => {
         <Route index element={<Home></Home>}></Route>
         <Route path="category/:categoryName" element={<CategoryDetails></CategoryDetails>} />
         <Route path="medicines/:id" element={<MedicineDetails></MedicineDetails>} />
+        <Route path="carts" element={<Cart></Cart>} />
       </Route>
       {/* <Route path="/shop" element={<Shop />} /> */}
       <Route path="/register" element={<Register></Register>} />

@@ -1,10 +1,10 @@
 import { Link, NavLink } from 'react-router-dom';
 import useAuth from '../Hooks/useAuth';
-// import useCart from '../Hooks/useCart';
+import useCart from '../Hooks/useCart';
 
 const Navbar = () => {
     const { user, logOut } = useAuth();
-    // const [cart,refetch] = useCart()
+    const [cart] = useCart()
     const handleLogout = async () => {
         try {
             await logOut(); // Log the user out using the logOut function from AuthContext
@@ -47,22 +47,15 @@ const Navbar = () => {
                     {user ? (
                         <div className="flex items-center space-x-3">
                             {/* Cart icon and count */}
-
-
-                            {/* {cart && cart.length > 0 && ( */}
-                                {/* // <div className="relative"> */}
-                                    {/* <Link to="/cart" className="btn btn-ghost"> */}
-                                        {/* <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"> */}
-                                            {/* <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h18l-1 12H4L3 3z" /> */}
-                                        {/* </svg> */}
-                                        {/* Display cart item count */}
-                                        {/* <span className="absolute top-0 right-0 text-xs bg-red-500 text-white rounded-full px-1">{cart?.length}</span> */}
-                                    {/* </Link> */}
-                                {/* </div> */}
-                            {/* )} */}
-
-                            
-
+                            {cart && cart.length > 0 && (
+                                <div className="relative">
+                                    <Link to="/carts">
+                                        <button className="btn">
+                                            Cart <div className="badge badge-sm badge-secondary">{cart.length}</div>
+                                        </button>
+                                    </Link>
+                                </div>
+                            )}
                             {/* Profile image */}
                             <img
                                 src={user.photoURL || 'https://via.placeholder.com/40'}

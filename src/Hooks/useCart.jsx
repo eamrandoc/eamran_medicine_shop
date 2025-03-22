@@ -3,24 +3,22 @@ import useAxiosSecure from "./useAxiosSecure";
 import useAuth from "./useAuth";
 
 const useCart = () => {
-    const axiosSecure =useAxiosSecure()
-    const {user} = useAuth()
+    const axiosSecure = useAxiosSecure();
+    const { user } = useAuth(); // Get the user data from authentication hook
+
+    // Use React Query to fetch cart data for the current user
     const { data: cart = [], isLoading, isError, error, refetch } = useQuery({
-        queryKey: ["cart", user?.email],
+        queryKey: ["cart", user?.email],  // Use user's email as query key for cart
         queryFn: async () => {
             const res = await axiosSecure.get(`/carts?email=${user?.email}`);
-            return res.data;
+            return res.data; // Return cart data from the response
         },
+        enabled: !!user?.email,  // Only run query if the user email is available
     });
-    if (isLoading) {
-        return <p className="text-center">Loading medicines...</p>;
-    }
 
-    if (isError) {
-        return <p className="text-center">Error: {error.message}</p>;
-    }
-
-    return [cart, refetch]
+    // Return the data, loading, error, and refetch functions to be used by components
+    console.log("object", cart);
+    return [ cart, isLoading, isError, error, refetch ];
 };
 
 export default useCart;
